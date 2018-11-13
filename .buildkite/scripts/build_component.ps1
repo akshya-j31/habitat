@@ -18,6 +18,11 @@ if($Component.Equals("")) {
     Write-Error "--- :error: Component to build not specified, please use the -Component flag" -ErrorAction Stop
 }
 
+$thingy = Invoke-Expression "buildkite-agent meta-data get 'version'"
+Write-Host "THING: $thingy"
+
+Exit-PSSession
+
 Write-Host "--- Setting source package channel to $SourceChannel"
 $Env:HAB_BLDR_CHANNEL="$SourceChannel"
 
@@ -33,8 +38,10 @@ New-Item -ItemType directory -Path C:\build
 Copy-Item -Path C:\workdir\* -Destination C:\build -Recurse
 
 Push-Location "C:\build"
+Write-Host "Running hab pkg build for $Component"
 Invoke-Expression "$baseHabExe pkg build components\$Component --keys core" -ErrorAction Stop
 . "components\$Component\habitat\results\last_build.ps1"
+Write-Host "Running hab pkg upload for $Component"
 Invoke-Expression "$baseHabExe pkg upload components\$Component\habitat\results\$pkg_artifact" -ErrorAction Stop
 Pop-Location
 
