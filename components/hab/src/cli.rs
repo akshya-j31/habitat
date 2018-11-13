@@ -27,6 +27,9 @@ use url::Url;
 use command::studio;
 use feat;
 
+static RING_ENVVAR: &'static str = "HAB_RING";
+static RING_KEY_ENVVAR: &'static str = "HAB_RING_KEY";
+
 pub fn get() -> App<'static, 'static> {
     let alias_apply = sub_config_apply()
         .about("Alias for 'config apply'")
@@ -858,7 +861,8 @@ pub fn sub_sup_run() -> App<'static, 'static> {
         (@arg PEER_WATCH_FILE: --("peer-watch-file") +takes_value conflicts_with[peer]
             "Watch this file for connecting to the ring"
         )
-        (@arg RING: --ring -r +takes_value "Ring key name")
+        (@arg RING: --ring -r env(RING_ENVVAR) "Ring key name")
+        (@arg RING_KEY: --("ring-key") env(RING_KEY_ENVVAR) "Contents of the ring key")
         (@arg CHANNEL: --channel +takes_value
             "Receive Supervisor updates from the specified release channel [default: stable]")
         (@arg BLDR_URL: -u --url +takes_value {valid_url}

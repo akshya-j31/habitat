@@ -67,9 +67,6 @@ use sup::util;
 /// Our output key
 static LOGKEY: &'static str = "MN";
 
-static RING_ENVVAR: &'static str = "HAB_RING";
-static RING_KEY_ENVVAR: &'static str = "HAB_RING_KEY";
-
 fn main() {
     env_logger::init();
     enable_features_from_env();
@@ -272,18 +269,12 @@ fn get_ring_key(m: &ArgMatches) -> Result<Option<SymKey>> {
             let key = SymKey::get_latest_pair_for(&val, &default_cache_key_path(None))?;
             Ok(Some(key))
         }
-        None => match henv::var(RING_KEY_ENVVAR) {
-            Ok(val) => {
+        None => match m.value_of("RING_KEY") {
+            Some(val) => {
                 let (key, _) = SymKey::write_file_from_str(&val, &default_cache_key_path(None))?;
                 Ok(Some(key))
             }
-            Err(_) => match henv::var(RING_ENVVAR) {
-                Ok(val) => {
-                    let key = SymKey::get_latest_pair_for(&val, &default_cache_key_path(None))?;
-                    Ok(Some(key))
-                }
-                Err(_) => Ok(None),
-            },
+            None => Ok(None),
         },
     }
 }
