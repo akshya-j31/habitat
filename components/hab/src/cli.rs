@@ -866,7 +866,11 @@ pub fn sub_sup_run() -> App<'static, 'static> {
              (ex: hab sup run --ring myring)")
         (@arg RING_KEY: --("ring-key") env(RING_KEY_ENVVAR) conflicts_with("RING") +hidden
             "The contents of the ring key when running with wire encryption. \
-             (Note: This option is explicitly undocumented and for testing purposes only. Do not use it in a production system. Use the corresponding environment variable instead.)")
+             (Note: This option is explicitly undocumented and for testing purposes only. Do not use it in a production system. Use the corresponding environment variable instead.)
+             (ex: hab sup run --ring-key 'SYM-SEC-1 \
+                  foo-20181113185935 \
+
+                  GCrBOW6CCN75LMl0j2V5QqQ6nNzWm6and9hkKBSUFPI=')")
         (@arg CHANNEL: --channel +takes_value
             "Receive Supervisor updates from the specified release channel [default: stable]")
         (@arg BLDR_URL: -u --url +takes_value {valid_url}
